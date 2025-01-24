@@ -17,7 +17,7 @@ const languages = [
   { value: "pa", label: "Punjabi" },
 ];
 
-export function TranslationCard({ onTranslate }: { onTranslate: (text: string) => void }) {
+export function TranslationCard({ onTranslate }: { onTranslate: (text: string, lang: string) => void }) {
   const [inputText, setInputText] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("");
 
@@ -32,12 +32,11 @@ export function TranslationCard({ onTranslate }: { onTranslate: (text: string) =
     }
     
     try {
-      // Using a free translation API (for demonstration)
       const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(inputText)}&langpair=en|${selectedLanguage}`);
       const data = await response.json();
       
       if (data.responseStatus === 200) {
-        onTranslate(data.responseData.translatedText);
+        onTranslate(data.responseData.translatedText, selectedLanguage);
         toast.success("Text translated successfully! 🎉");
       } else {
         toast.error("Translation failed. Please try again.");
@@ -57,7 +56,7 @@ export function TranslationCard({ onTranslate }: { onTranslate: (text: string) =
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">Select Language</label>
-          <Select onValueChange={setSelectedLanguage}>
+          <Select onValueChange={(value) => setSelectedLanguage(value)}>
             <SelectTrigger className="bg-white">
               <SelectValue placeholder="Choose a language" />
             </SelectTrigger>

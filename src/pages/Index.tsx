@@ -7,6 +7,12 @@ import { Logo } from "@/components/Logo";
 
 const Index = () => {
   const [translatedText, setTranslatedText] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState("");
+
+  const handleTranslation = (text: string, lang: string) => {
+    setTranslatedText(text);
+    setSelectedLanguage(lang);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-purple-50 to-pink-50">
@@ -25,9 +31,9 @@ const Index = () => {
           <AICharacter />
           
           <div className="mt-8 space-y-6">
-            <FileUpload onTextExtracted={setTranslatedText} />
-            <TranslationCard onTranslate={setTranslatedText} />
-            <TextToSpeech text={translatedText} />
+            <FileUpload onTextExtracted={(text) => handleTranslation(text, selectedLanguage)} />
+            <TranslationCard onTranslate={handleTranslation} />
+            <TextToSpeech text={translatedText} language={selectedLanguage} />
           </div>
         </div>
       </div>

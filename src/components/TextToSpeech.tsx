@@ -1,10 +1,41 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Volume2, Square } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export function TextToSpeech({ text }: { text: string }) {
+interface TextToSpeechProps {
+  text: string;
+  language?: string;
+}
+
+const languageToVoiceMap: Record<string, string> = {
+  'hi': 'hi-IN', // Hindi
+  'te': 'te-IN', // Telugu
+  'ta': 'ta-IN', // Tamil
+  'kn': 'kn-IN', // Kannada
+  'ml': 'ml-IN', // Malayalam
+  'bn': 'bn-IN', // Bengali
+  'gu': 'gu-IN', // Gujarati
+  'mr': 'mr-IN', // Marathi
+  'pa': 'pa-IN', // Punjabi
+  'en': 'en-IN', // English (India)
+};
+
+export function TextToSpeech({ text, language = 'en' }: TextToSpeechProps) {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
+
+  useEffect(() => {
+    const loadVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      setAvailableVoices(voices);
+    };
+
+    loadVoices();
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+  }, []);
 
   const handleSpeak = () => {
     if (!text) return;
@@ -16,6 +47,18 @@ export function TextToSpeech({ text }: { text: string }) {
     }
 
     const utterance = new SpeechSynthesisUtterance(text);
+    
+    // Try to find a matching voice for the selected language
+    const targetLang = languageToVoiceMap[language] || language;
+    const voice = availableVoices.find(v => 
+      v.lang.toLowerCase().includes(targetLang.toLowerCase())
+    );
+    
+    if (voice) {
+      utterance.voice = voice;
+    }
+    
+    utterance.lang = targetLang;
     utterance.onend = () => setIsPlaying(false);
     window.speechSynthesis.speak(utterance);
     setIsPlaying(true);
