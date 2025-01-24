@@ -11,13 +11,17 @@ const languages = [
   { value: "ta", label: "Tamil" },
   { value: "kn", label: "Kannada" },
   { value: "ml", label: "Malayalam" },
+  { value: "bn", label: "Bengali" },
+  { value: "gu", label: "Gujarati" },
+  { value: "mr", label: "Marathi" },
+  { value: "pa", label: "Punjabi" },
 ];
 
 export function TranslationCard({ onTranslate }: { onTranslate: (text: string) => void }) {
   const [inputText, setInputText] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("");
 
-  const handleTranslate = () => {
+  const handleTranslate = async () => {
     if (!inputText) {
       toast.error("Please enter some text to translate!");
       return;
@@ -27,24 +31,34 @@ export function TranslationCard({ onTranslate }: { onTranslate: (text: string) =
       return;
     }
     
-    // In a real app, you would call your translation API here
-    const translatedText = `Translated: ${inputText}`;
-    onTranslate(translatedText);
-    toast.success("Text translated successfully!");
+    try {
+      // Using a free translation API (for demonstration)
+      const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(inputText)}&langpair=en|${selectedLanguage}`);
+      const data = await response.json();
+      
+      if (data.responseStatus === 200) {
+        onTranslate(data.responseData.translatedText);
+        toast.success("Text translated successfully! 🎉");
+      } else {
+        toast.error("Translation failed. Please try again.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    }
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full max-w-2xl mx-auto bg-gradient-to-br from-white to-blue-50">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center text-primary">
+        <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
           Translate Educational Content
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <label className="text-sm font-medium">Select Language</label>
+          <label className="text-sm font-medium text-gray-700">Select Language</label>
           <Select onValueChange={setSelectedLanguage}>
-            <SelectTrigger>
+            <SelectTrigger className="bg-white">
               <SelectValue placeholder="Choose a language" />
             </SelectTrigger>
             <SelectContent>
@@ -58,20 +72,20 @@ export function TranslationCard({ onTranslate }: { onTranslate: (text: string) =
         </div>
         
         <div className="space-y-2">
-          <label className="text-sm font-medium">Enter Text</label>
+          <label className="text-sm font-medium text-gray-700">Enter Text</label>
           <Textarea
             placeholder="Type your educational content here..."
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            className="min-h-[150px]"
+            className="min-h-[150px] bg-white"
           />
         </div>
         
         <Button 
           onClick={handleTranslate}
-          className="w-full bg-primary hover:bg-primary/90"
+          className="w-full bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 transition-opacity"
         >
-          Translate
+          Translate Now! ✨
         </Button>
       </CardContent>
     </Card>
