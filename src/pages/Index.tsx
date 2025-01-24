@@ -15,16 +15,16 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-b from-[#1A1F2C] via-[#403E43] to-[#222222] text-white">
       <div className="container mx-auto px-4 py-8">
         <Logo />
         
-        <h1 className="text-4xl font-bold text-center text-primary mb-4 animate-float">
+        <h1 className="text-4xl font-bold text-center bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#F97316] bg-clip-text text-transparent mb-4 animate-float">
           EduLang Adventures
         </h1>
         
-        <p className="text-center text-gray-600 mb-8">
-          Learn and explore in your favorite language! 🌟
+        <p className="text-center text-gray-400 mb-8">
+          Explore the magic of learning in your favorite language! 🌟
         </p>
         
         <div className="max-w-4xl mx-auto">
