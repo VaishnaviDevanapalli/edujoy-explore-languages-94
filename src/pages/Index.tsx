@@ -15,7 +15,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#1A1F2C] via-[#403E43] to-[#222222] text-white">
+    <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] via-[#FEF7CD] to-[#FDE1D3] text-gray-800">
       <div className="container mx-auto px-4 py-8">
         <Logo />
         
@@ -23,7 +23,7 @@ const Index = () => {
           EduLang Adventures
         </h1>
         
-        <p className="text-center text-gray-400 mb-8">
+        <p className="text-center text-gray-600 mb-8">
           Explore the magic of learning in your favorite language! 🌟
         </p>
         
