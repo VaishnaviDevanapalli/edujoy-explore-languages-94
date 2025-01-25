@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import * as pdfjs from 'pdfjs-dist';
 import { Button } from "@/components/ui/button";
 
-// Initialize PDF.js worker
+// Initialize PDF.js worker using CDN
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 interface FileUploadProps {
