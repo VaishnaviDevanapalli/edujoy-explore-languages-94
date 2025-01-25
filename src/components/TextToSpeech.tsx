@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Volume2, Square } from "lucide-react";
+import { Volume2, Square, Copy } from "lucide-react";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 interface TextToSpeechProps {
   text: string;
@@ -48,7 +49,6 @@ export function TextToSpeech({ text, language = 'en' }: TextToSpeechProps) {
 
     const utterance = new SpeechSynthesisUtterance(text);
     
-    // Try to find a matching voice for the selected language
     const targetLang = languageToVoiceMap[language] || language;
     const voice = availableVoices.find(v => 
       v.lang.toLowerCase().includes(targetLang.toLowerCase())
@@ -64,23 +64,42 @@ export function TextToSpeech({ text, language = 'en' }: TextToSpeechProps) {
     setIsPlaying(true);
   };
 
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Translated text copied to clipboard! 📋");
+    } catch (err) {
+      toast.error("Failed to copy text. Please try again.");
+    }
+  };
+
   return (
     <Card className="w-full max-w-2xl mx-auto mt-4">
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <p className="text-sm font-medium flex-1">{text || "Translated text will appear here..."}</p>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handleSpeak}
-            className={`ml-4 ${isPlaying ? 'bg-red-100' : ''}`}
-          >
-            {isPlaying ? (
-              <Square className="h-4 w-4" />
-            ) : (
-              <Volume2 className="h-4 w-4" />
-            )}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleCopy}
+              className="ml-4"
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleSpeak}
+              className={`${isPlaying ? 'bg-red-100' : ''}`}
+            >
+              {isPlaying ? (
+                <Square className="h-4 w-4" />
+              ) : (
+                <Volume2 className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

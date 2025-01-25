@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { Copy, Trash2 } from "lucide-react";
 
 const languages = [
   { value: "hi", label: "Hindi" },
@@ -46,6 +47,20 @@ export function TranslationCard({ onTranslate }: { onTranslate: (text: string, l
     }
   };
 
+  const handleClear = () => {
+    setInputText("");
+    toast.success("Content cleared! ✨");
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(inputText);
+      toast.success("Text copied to clipboard! 📋");
+    } catch (err) {
+      toast.error("Failed to copy text. Please try again.");
+    }
+  };
+
   return (
     <Card className="w-full max-w-2xl mx-auto bg-gradient-to-br from-white to-blue-50">
       <CardHeader>
@@ -78,6 +93,26 @@ export function TranslationCard({ onTranslate }: { onTranslate: (text: string, l
             onChange={(e) => setInputText(e.target.value)}
             className="min-h-[150px] bg-white"
           />
+        </div>
+        
+        <div className="flex gap-2">
+          <Button 
+            onClick={handleCopy}
+            variant="outline"
+            className="flex-1"
+          >
+            <Copy className="w-4 h-4 mr-2" />
+            Copy Text
+          </Button>
+          
+          <Button 
+            onClick={handleClear}
+            variant="outline"
+            className="flex-1"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Clear
+          </Button>
         </div>
         
         <Button 

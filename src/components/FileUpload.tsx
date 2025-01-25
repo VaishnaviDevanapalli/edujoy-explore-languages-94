@@ -6,7 +6,8 @@ import * as pdfjs from 'pdfjs-dist';
 import { Button } from "@/components/ui/button";
 
 // Initialize PDF.js worker
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+const pdfjsWorker = await import('pdfjs-dist/build/pdf.worker.entry');
+pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker.default;
 
 interface FileUploadProps {
   onTextExtracted: (text: string) => void;
@@ -17,12 +18,17 @@ export function FileUpload({ onTextExtracted }: FileUploadProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.type === 'application/pdf') {
-      await handlePdfFile(file);
-    } else if (file.type.includes('text') || file.type.includes('document')) {
-      await handleTextFile(file);
-    } else {
-      toast.error("Please upload a PDF or text file!");
+    try {
+      if (file.type === 'application/pdf') {
+        await handlePdfFile(file);
+      } else if (file.type.includes('text') || file.type.includes('document')) {
+        await handleTextFile(file);
+      } else {
+        toast.error("Please upload a PDF or text file!");
+      }
+    } catch (error) {
+      console.error('File upload error:', error);
+      toast.error("Error processing file. Please try again.");
     }
   };
 
@@ -42,11 +48,12 @@ export function FileUpload({ onTextExtracted }: FileUploadProps) {
       onTextExtracted(fullText.trim());
       toast.success("PDF uploaded and text extracted successfully!");
     } catch (error) {
+      console.error('PDF processing error:', error);
       toast.error("Error reading PDF file. Please try again.");
     }
   };
 
-  const handleTextFile = async (file: File): Promise<void> => {
+  const handleTextFile = async (file: File) => {
     try {
       const text = await new Promise<string>((resolve) => {
         const reader = new FileReader();
