@@ -65,22 +65,22 @@ export function FileUpload({ onTextExtracted }: { onTextExtracted: (text: string
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto bg-gradient-to-br from-[#FEF7CD] to-[#FDE1D3] border-2 border-[#FEC6A1]/20 transition-all duration-300">
+    <Card className="w-full max-w-2xl mx-auto bg-gradient-to-br from-[#FEF7CD] to-[#FDE1D3] border-2 border-[#FEC6A1]/20 transition-all duration-300 dark:from-gray-800 dark:to-gray-900">
       <CardContent className="p-6">
         <div className="text-center cursor-pointer">
           <div className="flex flex-col items-center gap-4">
-            <div className="bg-[#E5DEFF] rounded-full p-3 animate-bounce">
-              <Upload className="w-6 h-6 text-[#8B5CF6]" />
+            <div className="bg-[#E5DEFF] rounded-full p-3 animate-bounce dark:bg-gray-700">
+              <Upload className="w-6 h-6 text-[#8B5CF6] dark:text-purple-400" />
             </div>
             <div className="space-y-2">
-              <h3 className="font-semibold text-[#333]">Upload your magical book! ✨</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="font-semibold text-[#333] dark:text-gray-200">Upload your magical book! ✨</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 Let's transform your PDF or text into any Indian language! 🎯
               </p>
               <div className="mt-4">
                 <label htmlFor="file-upload" className="cursor-pointer">
                   <Button 
-                    className="bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white"
+                    className="bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white dark:from-purple-600 dark:to-pink-600"
                   >
                     Choose File
                   </Button>

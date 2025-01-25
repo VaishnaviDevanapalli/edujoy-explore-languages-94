@@ -1,7 +1,7 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Volume2, Square, Copy } from "lucide-react";
-import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
 interface TextToSpeechProps {
@@ -10,16 +10,16 @@ interface TextToSpeechProps {
 }
 
 const languageToVoiceMap: Record<string, string> = {
-  'hi': 'hi-IN', // Hindi
-  'te': 'te-IN', // Telugu
-  'ta': 'ta-IN', // Tamil
-  'kn': 'kn-IN', // Kannada
-  'ml': 'ml-IN', // Malayalam
-  'bn': 'bn-IN', // Bengali
-  'gu': 'gu-IN', // Gujarati
-  'mr': 'mr-IN', // Marathi
-  'pa': 'pa-IN', // Punjabi
-  'en': 'en-IN', // English (India)
+  'hi': 'hi-IN',
+  'te': 'te-IN',
+  'ta': 'ta-IN',
+  'kn': 'kn-IN',
+  'ml': 'ml-IN',
+  'bn': 'bn-IN',
+  'gu': 'gu-IN',
+  'mr': 'mr-IN',
+  'pa': 'pa-IN',
+  'en': 'en-IN',
 };
 
 export function TextToSpeech({ text, language = 'en' }: TextToSpeechProps) {
@@ -74,10 +74,10 @@ export function TextToSpeech({ text, language = 'en' }: TextToSpeechProps) {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto mt-4">
+    <Card className="w-full max-w-2xl mx-auto mt-4 bg-white dark:bg-gray-800 transition-colors duration-300">
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
-          <p className="text-sm font-medium flex-1">{text || "Translated text will appear here..."}</p>
+          <p className="text-sm font-medium flex-1 text-gray-700 dark:text-gray-300">{text || "Translated text will appear here..."}</p>
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -91,7 +91,7 @@ export function TextToSpeech({ text, language = 'en' }: TextToSpeechProps) {
               variant="outline"
               size="icon"
               onClick={handleSpeak}
-              className={`${isPlaying ? 'bg-red-100' : ''}`}
+              className={`${isPlaying ? 'bg-red-100 dark:bg-red-900' : ''}`}
             >
               {isPlaying ? (
                 <Square className="h-4 w-4" />

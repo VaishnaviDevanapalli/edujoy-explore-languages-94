@@ -71,7 +71,7 @@ export function TranslationCard({ onTranslate }: { onTranslate: (text: string, l
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto bg-gradient-to-br from-white to-blue-50 dark:from-gray-800 dark:to-gray-900">
+    <Card className="w-full max-w-2xl mx-auto bg-gradient-to-br from-white to-blue-50 dark:from-gray-800 dark:to-gray-900 transition-colors duration-300">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
           Translate Educational Content
@@ -111,7 +111,7 @@ export function TranslationCard({ onTranslate }: { onTranslate: (text: string, l
             placeholder="Type your educational content here..."
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            className="min-h-[150px] bg-white dark:bg-gray-800"
+            className="min-h-[150px] bg-white dark:bg-gray-800 resize-y"
           />
         </div>
         
