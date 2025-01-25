@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { Upload, FileType } from "lucide-react";
+import { Upload } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import * as pdfjs from 'pdfjs-dist';
 import { Button } from "@/components/ui/button";
 
 // Initialize PDF.js worker
-const pdfjsWorker = await import('pdfjs-dist/build/pdf.worker.entry');
-pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker.default;
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 interface FileUploadProps {
   onTextExtracted: (text: string) => void;
