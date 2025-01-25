@@ -1,19 +1,16 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { Upload } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import * as pdfjs from 'pdfjs-dist';
 import { Button } from "@/components/ui/button";
 
-// Initialize PDF.js worker using CDN
-const pdfjsLib = await import('pdfjs-dist');
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+export function FileUpload({ onTextExtracted }: { onTextExtracted: (text: string) => void }) {
+  useEffect(() => {
+    // Initialize PDF.js worker
+    pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+  }, []);
 
-interface FileUploadProps {
-  onTextExtracted: (text: string) => void;
-}
-
-export function FileUpload({ onTextExtracted }: FileUploadProps) {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -35,7 +32,7 @@ export function FileUpload({ onTextExtracted }: FileUploadProps) {
   const handlePdfFile = async (file: File) => {
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
       let fullText = '';
       
       for (let i = 1; i <= pdf.numPages; i++) {
