@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 
 export function FileUpload({ onTextExtracted }: { onTextExtracted: (text: string) => void }) {
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     if (!isInitialized) {
@@ -17,10 +18,7 @@ export function FileUpload({ onTextExtracted }: { onTextExtracted: (text: string
     }
   }, [isInitialized]);
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  const handleFile = async (file: File) => {
     try {
       if (file.type === 'application/pdf') {
         await handlePdfFile(file);
@@ -71,35 +69,50 @@ export function FileUpload({ onTextExtracted }: { onTextExtracted: (text: string
     }
   };
 
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      await handleFile(file);
+    }
+  };
+
   return (
     <Card className="w-full max-w-2xl mx-auto bg-gradient-to-br from-[#FEF7CD] to-[#FDE1D3] border-2 border-[#FEC6A1]/20 transition-all duration-300 dark:from-gray-800 dark:to-gray-900">
       <CardContent className="p-6">
-        <div className="text-center cursor-pointer">
-          <div className="flex flex-col items-center gap-4">
+        <div 
+          className={`text-center cursor-pointer min-h-[200px] flex items-center justify-center rounded-lg border-2 border-dashed transition-all duration-300 ${
+            isDragging 
+              ? 'border-[#8B5CF6] bg-[#E5DEFF]/20' 
+              : 'border-gray-300 hover:border-[#8B5CF6]'
+          }`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          <div className="flex flex-col items-center gap-4 p-6">
             <div className="bg-[#E5DEFF] rounded-full p-3 animate-bounce dark:bg-gray-700">
               <Upload className="w-6 h-6 text-[#8B5CF6] dark:text-purple-400" />
             </div>
             <div className="space-y-2">
-              <h3 className="font-semibold text-[#333] dark:text-gray-200">Upload your magical book! ✨</h3>
+              <h3 className="font-semibold text-[#333] dark:text-gray-200">
+                Drag & Drop your magical book! ✨
+              </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Let's transform your PDF or text into any Indian language! 🎯
+                Drop your PDF or text file here to transform it into any Indian language! 🎯
               </p>
-              <div className="mt-4">
-                <label htmlFor="file-upload" className="cursor-pointer">
-                  <Button 
-                    className="bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white dark:from-purple-600 dark:to-pink-600"
-                  >
-                    Choose File
-                  </Button>
-                  <input
-                    id="file-upload"
-                    type="file"
-                    className="hidden"
-                    accept=".pdf,.txt,.doc,.docx"
-                    onChange={handleFileChange}
-                  />
-                </label>
-              </div>
             </div>
           </div>
         </div>
