@@ -19,8 +19,16 @@ const App = () => (
         <Routes>
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/translate" element={<AuthGuard><TranslatePage /></AuthGuard>} />
+          <Route 
+            path="/translate" 
+            element={
+              <AuthGuard>
+                <TranslatePage />
+              </AuthGuard>
+            } 
+          />
           <Route path="/" element={<Navigate to="/signin" replace />} />
+          <Route path="*" element={<Navigate to="/signin" replace />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
