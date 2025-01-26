@@ -21,24 +21,25 @@ const languages = [
 export function TranslationCard({ onTranslate }: { onTranslate: (text: string, lang: string) => void }) {
   const [inputText, setInputText] = useState("");
   const [previousText, setPreviousText] = useState("");
-  const [selectedLanguage, setSelectedLanguage] = useState("");
+  const [selectedSourceLang, setSelectedSourceLang] = useState("en");
+  const [selectedTargetLang, setSelectedTargetLang] = useState("");
 
   const handleTranslate = async () => {
     if (!inputText) {
       toast.error("Please enter some text to translate!");
       return;
     }
-    if (!selectedLanguage) {
-      toast.error("Please select a language!");
+    if (!selectedTargetLang) {
+      toast.error("Please select a target language!");
       return;
     }
     
     try {
-      const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(inputText)}&langpair=en|${selectedLanguage}`);
+      const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(inputText)}&langpair=${selectedSourceLang}|${selectedTargetLang}`);
       const data = await response.json();
       
       if (data.responseStatus === 200) {
-        onTranslate(data.responseData.translatedText, selectedLanguage);
+        onTranslate(data.responseData.translatedText, selectedTargetLang);
         toast.success("Text translated successfully! 🎉");
       } else {
         toast.error("Translation failed. Please try again.");
@@ -78,20 +79,39 @@ export function TranslationCard({ onTranslate }: { onTranslate: (text: string, l
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Select Language</label>
-          <Select onValueChange={(value) => setSelectedLanguage(value)}>
-            <SelectTrigger className="bg-white dark:bg-gray-800">
-              <SelectValue placeholder="Choose a language" />
-            </SelectTrigger>
-            <SelectContent>
-              {languages.map((lang) => (
-                <SelectItem key={lang.value} value={lang.value}>
-                  {lang.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Source Language</label>
+            <Select value={selectedSourceLang} onValueChange={setSelectedSourceLang}>
+              <SelectTrigger className="bg-white dark:bg-gray-800">
+                <SelectValue placeholder="Choose source language" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="en">English</SelectItem>
+                {languages.map((lang) => (
+                  <SelectItem key={lang.value} value={lang.value}>
+                    {lang.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Target Language</label>
+            <Select value={selectedTargetLang} onValueChange={setSelectedTargetLang}>
+              <SelectTrigger className="bg-white dark:bg-gray-800">
+                <SelectValue placeholder="Choose target language" />
+              </SelectTrigger>
+              <SelectContent>
+                {languages.map((lang) => (
+                  <SelectItem key={lang.value} value={lang.value}>
+                    {lang.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         
         <div className="space-y-2">
