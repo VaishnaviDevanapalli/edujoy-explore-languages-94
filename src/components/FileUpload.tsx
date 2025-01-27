@@ -27,8 +27,8 @@ export function FileUpload({ onTextExtracted }: { onTextExtracted: (text: string
 
   useEffect(() => {
     if (!isInitialized) {
-      // Use CDN URL for the worker
-      pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+      const workerUrl = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+      pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
       setIsInitialized(true);
     }
   }, [isInitialized]);
