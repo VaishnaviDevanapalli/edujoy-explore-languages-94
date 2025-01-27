@@ -27,7 +27,11 @@ export function FileUpload({ onTextExtracted }: { onTextExtracted: (text: string
 
   useEffect(() => {
     if (!isInitialized) {
-      pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+      const workerUrl = new URL(
+        'node_modules/pdfjs-dist/build/pdf.worker.min.js',
+        window.location.origin
+      ).href;
+      pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
       setIsInitialized(true);
     }
   }, [isInitialized]);
