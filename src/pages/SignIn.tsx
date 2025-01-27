@@ -4,30 +4,65 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { LogIn, User } from "lucide-react";
+import { LogIn } from "lucide-react";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [verificationSent, setVerificationSent] = useState(false);
   const navigate = useNavigate();
 
-  const handleSignIn = (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       toast.error("Please fill in all fields");
       return;
     }
-    // For demo purposes, using simple validation
-    if (email && password) {
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("userEmail", email);
-      toast.success("Successfully signed in!");
-      navigate("/translate");
+
+    try {
+      // For demo purposes, simulate sending a verification email
+      setVerificationSent(true);
+      localStorage.setItem("pendingSignInVerification", email);
+      toast.success("Verification email sent! Please check your inbox.");
+    } catch (error) {
+      toast.error("Failed to sign in. Please try again.");
     }
   };
 
+  const handleVerificationConfirm = () => {
+    // For demo purposes, simulate email verification
+    localStorage.setItem("isAuthenticated", "true");
+    localStorage.setItem("userEmail", email);
+    localStorage.removeItem("pendingSignInVerification");
+    toast.success("Successfully signed in!");
+    navigate("/translate");
+  };
+
+  if (verificationSent) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#F2FCE2] via-[#FEF7CD] to-[#FDE1D3]">
+        <Card className="w-[350px] shadow-lg">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl text-center font-bold">
+              Verify Your Sign In
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-center text-sm text-gray-600">
+              We've sent a verification email to {email}. Please check your inbox and click the verification link.
+            </p>
+            {/* For demo purposes, we'll add a button to simulate verification */}
+            <Button onClick={handleVerificationConfirm} className="w-full">
+              Simulate Email Verification
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#F2FCE2] via-[#FEF7CD] to-[#FDE1D3] dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#F2FCE2] via-[#FEF7CD] to-[#FDE1D3]">
       <Card className="w-[350px] shadow-lg">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl text-center font-bold">
