@@ -5,9 +5,6 @@ import { toast } from "sonner";
 import * as pdfjs from 'pdfjs-dist';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-// Import the worker directly from node_modules
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
-
 const languages = [
   { value: "hi", label: "Hindi" },
   { value: "te", label: "Telugu" },
@@ -30,8 +27,8 @@ export function FileUpload({ onTextExtracted }: { onTextExtracted: (text: string
 
   useEffect(() => {
     if (!isInitialized) {
-      // Set the worker source directly using the imported worker
-      pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+      const workerUrl = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+      pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
       setIsInitialized(true);
     }
   }, [isInitialized]);
