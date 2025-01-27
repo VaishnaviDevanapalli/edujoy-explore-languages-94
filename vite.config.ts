@@ -18,12 +18,5 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-  },
-  build: {
-    rollupOptions: {
-      external: [
-        'pdfjs-dist/build/pdf.worker.entry'
-      ]
-    }
   }
 }));
