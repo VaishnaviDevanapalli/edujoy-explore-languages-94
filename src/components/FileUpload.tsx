@@ -27,11 +27,7 @@ export function FileUpload({ onTextExtracted }: { onTextExtracted: (text: string
 
   useEffect(() => {
     if (!isInitialized) {
-      // Use the worker directly from node_modules
-      pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-        'pdfjs-dist/build/pdf.worker.mjs',
-        import.meta.url
-      ).toString();
+      pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
       setIsInitialized(true);
     }
   }, [isInitialized]);
