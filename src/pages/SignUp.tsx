@@ -27,9 +27,6 @@ export default function SignUp() {
     try {
       // For demo purposes, we'll simulate sending a verification email
       setVerificationSent(true);
-      // In a real app, you would send an actual verification email here
-      toast.success("Verification email sent! Please check your inbox.");
-      
       // Store pending verification status
       localStorage.setItem("pendingVerification", email);
     } catch (error) {
@@ -48,7 +45,7 @@ export default function SignUp() {
 
   if (verificationSent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#F2FCE2] via-[#FEF7CD] to-[#FDE1D3] dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#F2FCE2] via-[#FEF7CD] to-[#FDE1D3]">
         <Card className="w-[350px] shadow-lg">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl text-center font-bold">
@@ -70,7 +67,7 @@ export default function SignUp() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#F2FCE2] via-[#FEF7CD] to-[#FDE1D3] dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#F2FCE2] via-[#FEF7CD] to-[#FDE1D3]">
       <Card className="w-[350px] shadow-lg">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl text-center font-bold">
