@@ -10,9 +10,10 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [verificationSent, setVerificationSent] = useState(false);
   const navigate = useNavigate();
 
-  const handleSignUp = (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password || !confirmPassword) {
       toast.error("Please fill in all fields");
@@ -22,12 +23,51 @@ export default function SignUp() {
       toast.error("Passwords do not match");
       return;
     }
-    // For demo purposes, store in localStorage
+
+    try {
+      // For demo purposes, we'll simulate sending a verification email
+      setVerificationSent(true);
+      // In a real app, you would send an actual verification email here
+      toast.success("Verification email sent! Please check your inbox.");
+      
+      // Store pending verification status
+      localStorage.setItem("pendingVerification", email);
+    } catch (error) {
+      toast.error("Failed to create account. Please try again.");
+    }
+  };
+
+  const handleVerificationConfirm = () => {
+    // For demo purposes, we'll simulate email verification
     localStorage.setItem("isAuthenticated", "true");
     localStorage.setItem("userEmail", email);
-    toast.success("Successfully signed up!");
+    localStorage.removeItem("pendingVerification");
+    toast.success("Email verified successfully!");
     navigate("/translate");
   };
+
+  if (verificationSent) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#F2FCE2] via-[#FEF7CD] to-[#FDE1D3] dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <Card className="w-[350px] shadow-lg">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl text-center font-bold">
+              Verify Your Email
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+              We've sent a verification email to {email}. Please check your inbox and click the verification link.
+            </p>
+            {/* For demo purposes, we'll add a button to simulate verification */}
+            <Button onClick={handleVerificationConfirm} className="w-full">
+              Simulate Email Verification
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#F2FCE2] via-[#FEF7CD] to-[#FDE1D3] dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
