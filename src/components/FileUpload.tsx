@@ -3,10 +3,26 @@ import { Upload } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import * as pdfjs from 'pdfjs-dist';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const languages = [
+  { value: "hi", label: "Hindi" },
+  { value: "te", label: "Telugu" },
+  { value: "ta", label: "Tamil" },
+  { value: "kn", label: "Kannada" },
+  { value: "ml", label: "Malayalam" },
+  { value: "bn", label: "Bengali" },
+  { value: "gu", label: "Gujarati" },
+  { value: "mr", label: "Marathi" },
+  { value: "pa", label: "Punjabi" },
+];
 
 export function FileUpload({ onTextExtracted }: { onTextExtracted: (text: string) => void }) {
   const [isInitialized, setIsInitialized] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [selectedSourceLang, setSelectedSourceLang] = useState("en");
+  const [selectedTargetLang, setSelectedTargetLang] = useState("");
+  const [extractedText, setExtractedText] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -46,7 +62,7 @@ export function FileUpload({ onTextExtracted }: { onTextExtracted: (text: string
         fullText += pageText + ' ';
       }
       
-      onTextExtracted(fullText.trim());
+      setExtractedText(fullText.trim());
       toast.success("PDF uploaded and text extracted successfully!");
     } catch (error) {
       console.error('PDF processing error:', error);
@@ -61,10 +77,35 @@ export function FileUpload({ onTextExtracted }: { onTextExtracted: (text: string
         reader.onload = (e) => resolve(e.target?.result as string || "");
         reader.readAsText(file);
       });
-      onTextExtracted(text);
+      setExtractedText(text);
       toast.success("File uploaded successfully!");
     } catch (error) {
       toast.error("Error reading file. Please try again.");
+    }
+  };
+
+  const handleTranslate = async () => {
+    if (!extractedText) {
+      toast.error("Please upload a file first!");
+      return;
+    }
+    if (!selectedTargetLang) {
+      toast.error("Please select a target language!");
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(extractedText)}&langpair=${selectedSourceLang}|${selectedTargetLang}`);
+      const data = await response.json();
+      
+      if (data.responseStatus === 200) {
+        onTextExtracted(data.responseData.translatedText);
+        toast.success("Text translated successfully! 🎉");
+      } else {
+        toast.error("Translation failed. Please try again.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
     }
   };
 
@@ -88,20 +129,44 @@ export function FileUpload({ onTextExtracted }: { onTextExtracted: (text: string
     }
   };
 
-  const handleClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      await handleFile(file);
-    }
-  };
-
   return (
     <Card className="w-full max-w-2xl mx-auto bg-gradient-to-br from-[#FEF7CD] to-[#FDE1D3] border-2 border-[#FEC6A1]/20 transition-all duration-300 dark:from-gray-800 dark:to-gray-900">
-      <CardContent className="p-6">
+      <CardContent className="p-6 space-y-4">
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Source Language</label>
+            <Select value={selectedSourceLang} onValueChange={setSelectedSourceLang}>
+              <SelectTrigger className="bg-white dark:bg-gray-800">
+                <SelectValue placeholder="Choose source language" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="en">English</SelectItem>
+                {languages.map((lang) => (
+                  <SelectItem key={lang.value} value={lang.value}>
+                    {lang.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Target Language</label>
+            <Select value={selectedTargetLang} onValueChange={setSelectedTargetLang}>
+              <SelectTrigger className="bg-white dark:bg-gray-800">
+                <SelectValue placeholder="Choose target language" />
+              </SelectTrigger>
+              <SelectContent>
+                {languages.map((lang) => (
+                  <SelectItem key={lang.value} value={lang.value}>
+                    {lang.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
         <div 
           className={`text-center cursor-pointer min-h-[200px] flex items-center justify-center rounded-lg border-2 border-dashed transition-all duration-300 ${
             isDragging 
@@ -111,12 +176,15 @@ export function FileUpload({ onTextExtracted }: { onTextExtracted: (text: string
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          onClick={handleClick}
+          onClick={() => fileInputRef.current?.click()}
         >
           <input
             type="file"
             ref={fileInputRef}
-            onChange={handleFileSelect}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleFile(file);
+            }}
             accept=".pdf,.txt,.doc,.docx"
             className="hidden"
           />
@@ -134,6 +202,17 @@ export function FileUpload({ onTextExtracted }: { onTextExtracted: (text: string
             </div>
           </div>
         </div>
+
+        {extractedText && (
+          <div className="mt-4">
+            <button
+              onClick={handleTranslate}
+              className="w-full bg-gradient-to-r from-primary to-purple-500 text-white py-2 rounded-lg hover:opacity-90 transition-opacity"
+            >
+              Translate File Content
+            </button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
