@@ -5,6 +5,9 @@ import { toast } from "sonner";
 import * as pdfjs from 'pdfjs-dist';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+// Import the worker directly
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
+
 const languages = [
   { value: "hi", label: "Hindi" },
   { value: "te", label: "Telugu" },
@@ -27,11 +30,7 @@ export function FileUpload({ onTextExtracted }: { onTextExtracted: (text: string
 
   useEffect(() => {
     if (!isInitialized) {
-      const workerUrl = new URL(
-        'node_modules/pdfjs-dist/build/pdf.worker.min.js',
-        window.location.origin
-      ).href;
-      pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
+      pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
       setIsInitialized(true);
     }
   }, [isInitialized]);
